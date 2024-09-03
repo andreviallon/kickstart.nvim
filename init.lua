@@ -1,4 +1,3 @@
--- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
@@ -81,6 +80,7 @@ vim.keymap.set('i', 'jj', '<Esc>')
 
 -- Lazy
 vim.keymap.set('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
+vim.keymap.set('n', '<leader>:', 'q:', { desc = 'Command history' })
 
 -- Buffer
 vim.keymap.set('n', '<leader>b1', ':lua require("bufferline").go_to_buffer(1, true)<CR>', { silent = true, desc = 'Goto buffer 1' })
@@ -93,12 +93,19 @@ vim.keymap.set('n', '<leader>b7', ':lua require("bufferline").go_to_buffer(7, tr
 vim.keymap.set('n', '<leader>b8', ':lua require("bufferline").go_to_buffer(8, true)<CR>', { silent = true, desc = 'Goto buffer 8' })
 vim.keymap.set('n', '<leader>b9', ':lua require("bufferline").go_to_buffer(9, true)<CR>', { silent = true, desc = 'Goto buffer 9' })
 vim.keymap.set('n', '<leader>b$', ':lua require("bufferline").go_to_buffer($, true)<CR>', { silent = true, desc = 'Goto last buffer' })
+vim.keymap.set('n', '<leader>bd', ':bp|bd #<CR>', { noremap = true })
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>dq', vim.diagnostic.setloclist, { desc = 'Toggle diagnostic quickfix list' })
+vim.keymap.set('n', '<leader>ux', vim.diagnostic.setloclist, { desc = 'Toggle diagnostic quickfix list' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic message' })
 vim.keymap.set('n', '<leader>de', vim.diagnostic.open_float, { desc = 'Open diagnostic error message' })
+
+-- Move lines up and down
+vim.keymap.set('n', '<A-j>', ':m .+1<CR>==')
+vim.keymap.set('n', '<A-k>', ':m .-2<CR>==')
+vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv")
 
 -- is not what someone will guess without a bit more experience.
 --
@@ -261,8 +268,9 @@ require('lazy').setup({
       spec = {
         { '<leader>c', group = 'Code', mode = { 'n', 'x' } },
         { '<leader>f', group = 'File & Search' },
-        { '<leader>t', group = 'Test' },
+        { '<leader>t', group = 'Test', icon = { icon = '󰙨 ', color = 'green' } },
         { '<leader>g', group = 'Git' },
+        { '<leader>u', group = 'UI' },
         { '<leader>d', group = 'Diagnostics', icon = { icon = '󱖫 ', color = 'green' } },
         {
           '<leader>b',
@@ -273,7 +281,7 @@ require('lazy').setup({
         },
         {
           '<leader>w',
-          group = 'Windows',
+          group = 'Window',
           proxy = '<c-w>',
           expand = function()
             return require('which-key.extras').expand.win()
@@ -539,7 +547,7 @@ require('lazy').setup({
           --
           -- This may be unwanted, since they displace some of your code
           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-            map('<leader>ch', function()
+            map('<leader>uh', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, 'Toggle inlay hints')
           end
@@ -629,7 +637,7 @@ require('lazy').setup({
     cmd = { 'ConformInfo' },
     keys = {
       {
-        '<leader>cf',
+        '<leader>cb',
         function()
           require('conform').format { async = true, lsp_format = 'fallback' }
         end,
@@ -880,7 +888,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
