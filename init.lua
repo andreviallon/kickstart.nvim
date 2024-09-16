@@ -102,10 +102,10 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic me
 vim.keymap.set('n', '<leader>de', vim.diagnostic.open_float, { desc = 'Open diagnostic error message' })
 
 -- Move lines up and down
-vim.keymap.set('n', '<A-j>', ':m .+1<CR>==')
-vim.keymap.set('n', '<A-k>', ':m .-2<CR>==')
-vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv")
-vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv")
+vim.keymap.set('n', '<A-S-J>', ':m .+1<CR>==')
+vim.keymap.set('n', '<A-S-K>', ':m .-2<CR>==')
+vim.keymap.set('v', '<A-S-J>', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', '<A-S-K>', ":m '<-2<CR>gv=gv")
 
 -- is not what someone will guess without a bit more experience.
 --
@@ -857,6 +857,17 @@ require('lazy').setup({
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
+      textobjects = {
+        swap = {
+          enable = true,
+          swap_next = {
+            ['<leader>a'] = '@parameter.inner',
+          },
+          swap_previous = {
+            ['<leader>A'] = '@parameter.inner',
+          },
+        },
+      },
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
