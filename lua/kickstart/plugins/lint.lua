@@ -13,6 +13,7 @@ return {
         tsx = { 'eslint_d' },
         typescriptreact = { 'eslint_d' },
         json = { 'jsonlint' },
+        graphql = { 'graphql' },
       }
       vim.keymap.set('n', '<leader>dl', function()
         lint.try_lint()
