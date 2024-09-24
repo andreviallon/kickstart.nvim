@@ -1,13 +1,27 @@
 return {
   'nvim-neotest/neotest',
-  dependencies = { 'nvim-neotest/nvim-nio' },
-  opts = {
-    adapters = {
-      ['neotest-vitest'] = {},
-    },
-    status = { virtual_text = true },
-    output = { open_on_run = true },
+  dependencies = {
+    'nvim-neotest/neotest-jest',
+    'nvim-neotest/nvim-nio',
+    'antoinemadec/FixCursorHold.nvim',
+    'nvim-lua/plenary.nvim',
+    'nvim-treesitter/nvim-treesitter',
   },
+  opts = function(_, opts)
+    opts.adapters = opts.adapters or {}
+    table.insert(
+      opts.adapters,
+      require 'neotest-jest' {
+        jestConfigFile = function(file)
+          if string.find(file, '/packages/') then
+            return string.match(file, '(.-/[^/]+/)src') .. 'jest.config.ts'
+          end
+          return vim.fn.getcwd() .. '/jest.config.ts'
+        end,
+        env = { CI = true },
+      }
+    )
+  end,
   -- stylua: ignore
   keys = {
     {"<leader>t", "", desc = "+test"},

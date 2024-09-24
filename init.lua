@@ -102,10 +102,10 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Next diagnostic me
 vim.keymap.set('n', '<leader>de', vim.diagnostic.open_float, { desc = 'Open diagnostic error message' })
 
 -- Move lines up and down
-vim.keymap.set('n', '<A-S-J>', ':m .+1<CR>==')
-vim.keymap.set('n', '<A-S-K>', ':m .-2<CR>==')
-vim.keymap.set('v', '<A-S-J>', ":m '>+1<CR>gv=gv")
-vim.keymap.set('v', '<A-S-K>', ":m '<-2<CR>gv=gv")
+vim.keymap.set('n', '<A-j>', ':m .+1<CR>==')
+vim.keymap.set('n', '<A-k>', ':m .-2<CR>==')
+vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv")
 
 -- is not what someone will guess without a bit more experience.
 --
@@ -370,22 +370,15 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Help' })
       vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = 'Keymaps' })
       vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'File' })
+      vim.keymap.set('n', '<leader><leader>', builtin.find_files, { desc = 'Find file' })
       vim.keymap.set('n', '<leader>fg', builtin.git_files, { desc = 'File (git)' })
       vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = 'Search word current file' })
       vim.keymap.set('n', '<leader>fW', builtin.live_grep, { desc = 'Search word (live grep)' })
+      vim.keymap.set('n', '<leader>/', builtin.live_grep, { desc = 'Search word' })
       vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = 'Diagnostics' })
       vim.keymap.set('n', '<leader>fR', builtin.resume, { desc = 'Resume search' })
       vim.keymap.set('n', '<leader>fr', builtin.oldfiles, { desc = 'Recent files' })
       vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Buffer' })
-
-      -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
-      end, { desc = '[/] Fuzzy search buffer' })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
@@ -402,6 +395,10 @@ require('lazy').setup({
       end, { desc = 'Neovim files' })
     end,
   },
+
+  config = function(_, opts)
+    require('neotest').setup(opts)
+  end,
 
   -- LSP Plugins
   {
@@ -630,54 +627,42 @@ require('lazy').setup({
       }
     end,
   },
-
-  { -- Autoformat
+  {
     'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>cb',
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = '',
-        desc = 'Format buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        local lsp_format_opt
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
-        else
-          lsp_format_opt = 'fallback'
-        end
-        return {
-          timeout_ms = 500,
-          lsp_format = lsp_format_opt,
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = function()
+      local conform = require 'conform'
+
+      conform.setup {
+        formatters_by_ft = {
+          javascript = { 'prettierd' },
+          typescript = { 'prettierd' },
+          javascriptreact = { 'prettierd' },
+          typescriptreact = { 'prettierd' },
+          css = { 'prettierd' },
+          html = { 'prettierd' },
+          json = { 'prettierd' },
+          yaml = { 'prettierd' },
+          markdown = { 'prettierd' },
+          graphql = { 'prettierd' },
+          lua = { 'stylua' },
+          python = { 'isort', 'black' },
+        },
+        format_on_save = {
+          lsp_fallback = true,
+          async = false,
+          timeout_ms = 1000,
+        },
+      }
+
+      vim.keymap.set({ 'n', 'v' }, '<leader>cf', function()
+        conform.format {
+          lsp_fallback = true,
+          async = false,
+          timeout_ms = 1000,
         }
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        javascript = { 'prettierd' },
-        typescript = { 'prettierd' },
-        javascriptreact = { 'prettierd' },
-        typescriptreact = { 'prettierd' },
-        ts = { 'prettierd' },
-        tsx = { 'prettierd' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
-      },
-    },
+      end, { desc = 'Format file or range' })
+    end,
   },
 
   { -- Autocompletion
@@ -807,11 +792,55 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight-moon'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
+  },
+
+  {
+    'catppuccin/nvim',
+    lazy = true,
+    name = 'catppuccin',
+    opts = {
+      integrations = {
+        aerial = true,
+        alpha = true,
+        cmp = true,
+        dashboard = true,
+        flash = true,
+        grug_far = true,
+        gitsigns = true,
+        headlines = true,
+        illuminate = true,
+        indent_blankline = { enabled = true },
+        leap = true,
+        lsp_trouble = true,
+        mason = true,
+        markdown = true,
+        mini = true,
+        native_lsp = {
+          enabled = true,
+          underlines = {
+            errors = { 'undercurl' },
+            hints = { 'undercurl' },
+            warnings = { 'undercurl' },
+            information = { 'undercurl' },
+          },
+        },
+        navic = { enabled = true, custom_bg = 'lualine' },
+        neotest = true,
+        neotree = true,
+        noice = true,
+        notify = true,
+        semantic_tokens = true,
+        telescope = true,
+        treesitter = true,
+        treesitter_context = true,
+        which_key = true,
+      },
+    },
   },
 
   -- Highlight todo, notes, etc in comments
