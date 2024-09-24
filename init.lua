@@ -370,22 +370,15 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Help' })
       vim.keymap.set('n', '<leader>fk', builtin.keymaps, { desc = 'Keymaps' })
       vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'File' })
+      vim.keymap.set('n', '<leader><leader>', builtin.find_files, { desc = 'Find file' })
       vim.keymap.set('n', '<leader>fg', builtin.git_files, { desc = 'File (git)' })
       vim.keymap.set('n', '<leader>fw', builtin.grep_string, { desc = 'Search word current file' })
       vim.keymap.set('n', '<leader>fW', builtin.live_grep, { desc = 'Search word (live grep)' })
+      vim.keymap.set('n', '<leader>/', builtin.live_grep, { desc = 'Search word' })
       vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = 'Diagnostics' })
       vim.keymap.set('n', '<leader>fR', builtin.resume, { desc = 'Resume search' })
       vim.keymap.set('n', '<leader>fr', builtin.oldfiles, { desc = 'Recent files' })
       vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Buffer' })
-
-      -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
-      end, { desc = '[/] Fuzzy search buffer' })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
@@ -799,11 +792,55 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight-moon'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
+  },
+
+  {
+    'catppuccin/nvim',
+    lazy = true,
+    name = 'catppuccin',
+    opts = {
+      integrations = {
+        aerial = true,
+        alpha = true,
+        cmp = true,
+        dashboard = true,
+        flash = true,
+        grug_far = true,
+        gitsigns = true,
+        headlines = true,
+        illuminate = true,
+        indent_blankline = { enabled = true },
+        leap = true,
+        lsp_trouble = true,
+        mason = true,
+        markdown = true,
+        mini = true,
+        native_lsp = {
+          enabled = true,
+          underlines = {
+            errors = { 'undercurl' },
+            hints = { 'undercurl' },
+            warnings = { 'undercurl' },
+            information = { 'undercurl' },
+          },
+        },
+        navic = { enabled = true, custom_bg = 'lualine' },
+        neotest = true,
+        neotree = true,
+        noice = true,
+        notify = true,
+        semantic_tokens = true,
+        telescope = true,
+        treesitter = true,
+        treesitter_context = true,
+        which_key = true,
+      },
+    },
   },
 
   -- Highlight todo, notes, etc in comments
