@@ -31,7 +31,7 @@ return {
       dashboard.button("n", " " .. " New file",        [[<cmd> ene <BAR> startinsert <cr>]]),
       dashboard.button("r", " " .. " Recent files",    ":Telescope oldfiles <CR>"),
       dashboard.button("g", " " .. " Find text",       ":Telescope live_grep <CR>"),
-      dashboard.button("c", " " .. " Config",          ":e ~/.config/nvim/init.vim<CR>"),
+      dashboard.button("c", " " .. " Config",          ":e ~/.config/nvim/init.lua<CR>"),
       dashboard.button("s", " " .. " Restore last session", "<cmd> :SessionRestore <cr>"),
       dashboard.button("l", "󰒲 " .. " Lazy",            "<cmd> Lazy <cr>"),
       dashboard.button("q", " " .. " Quit",            "<cmd> qa <cr>"),
