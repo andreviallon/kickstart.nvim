@@ -125,10 +125,11 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<leader>-', '<C-W>s', { desc = 'Split window below', remap = true })
 vim.keymap.set('n', '<leader>|', '<C-W>v', { desc = 'Split window right', remap = true })
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Focus left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Focus right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Focus lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Focus upper window' })
+
+vim.keymap.set('n', '<A-h>', '<C-w><C-h>', { desc = 'Focus left window' })
+vim.keymap.set('n', '<A-l>', '<C-w><C-l>', { desc = 'Focus right window' })
+vim.keymap.set('n', '<A-j>', '<C-w><C-j>', { desc = 'Focus lower window' })
+vim.keymap.set('n', '<A-k>', '<C-w><C-k>', { desc = 'Focus upper window' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`

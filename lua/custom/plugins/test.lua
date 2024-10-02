@@ -1,38 +1,14 @@
 return {
-  'nvim-neotest/neotest',
+  'vim-test/vim-test',
   dependencies = {
-    'nvim-neotest/neotest-jest',
-    'nvim-neotest/nvim-nio',
-    'antoinemadec/FixCursorHold.nvim',
-    'nvim-lua/plenary.nvim',
-    'nvim-treesitter/nvim-treesitter',
+    'preservim/vimux',
   },
-  opts = function(_, opts)
-    opts.adapters = opts.adapters or {}
-    table.insert(
-      opts.adapters,
-      require 'neotest-jest' {
-        jestConfigFile = function(file)
-          if string.find(file, '/packages/') then
-            return string.match(file, '(.-/[^/]+/)src') .. 'jest.config.ts'
-          end
-          return vim.fn.getcwd() .. '/jest.config.ts'
-        end,
-        env = { CI = true },
-      }
-    )
+  config = function()
+    vim.keymap.set('n', '<leader>tr', ':TestNearest<CR>', { desc = 'Run nearest' })
+    vim.keymap.set('n', '<leader>tt', ':TestFile<CR>', { desc = 'Run file' })
+    vim.keymap.set('n', '<leader>ts', ':TestSuite<CR>', { desc = 'Run suite' })
+    vim.keymap.set('n', '<leader>tl', ':TestLast<CR>', { desc = 'Run last' })
+    vim.keymap.set('n', '<leader>tv', ':TestVisit<CR>', { desc = 'Visit' })
+    vim.cmd "let test#strategy = 'vimux'"
   end,
-  -- stylua: ignore
-  keys = {
-    {"<leader>t", "", desc = "+test"},
-    { "<leader>tt", function() require("neotest").run.run(vim.fn.expand("%")) end, desc = "Run File" },
-    { "<leader>tT", function() require("neotest").run.run(vim.uv.cwd()) end, desc = "Run All Test Files" },
-    { "<leader>tr", function() require("neotest").run.run() end, desc = "Run Nearest" },
-    { "<leader>tl", function() require("neotest").run.run_last() end, desc = "Run Last" },
-    { "<leader>ts", function() require("neotest").summary.toggle() end, desc = "Toggle Summary" },
-    { "<leader>to", function() require("neotest").output.open({ enter = true, auto_close = true }) end, desc = "Show Output" },
-    { "<leader>tO", function() require("neotest").output_panel.toggle() end, desc = "Toggle Output Panel" },
-    { "<leader>tS", function() require("neotest").run.stop() end, desc = "Stop" },
-    { "<leader>tw", function() require("neotest").watch.toggle(vim.fn.expand("%")) end, desc = "Toggle Watch" },
-  },
 }
