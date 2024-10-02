@@ -273,6 +273,7 @@ require('lazy').setup({
         { '<leader>g', group = 'Git' },
         { '<leader>u', group = 'UI' },
         { '<leader>d', group = 'Diagnostics', icon = { icon = '󱖫 ', color = 'green' } },
+        { '<leader>h', group = 'Harpoon' },
         {
           '<leader>b',
           group = 'Buffer',
