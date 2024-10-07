@@ -3,6 +3,10 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+vim.opt.virtualedit = 'block'
+
+vim.opt.wrap = false
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -269,10 +273,10 @@ require('lazy').setup({
       spec = {
         { '<leader>c', group = 'Code', mode = { 'n', 'x' } },
         { '<leader>f', group = 'File & Search' },
-        { '<leader>t', group = 'Test', icon = { icon = '󰙨 ', color = 'green' } },
+        { '<leader>t', group = 'Test', icon = { icon = '󰙨 ' } },
         { '<leader>g', group = 'Git' },
         { '<leader>u', group = 'UI' },
-        { '<leader>d', group = 'Diagnostics', icon = { icon = '󱖫 ', color = 'green' } },
+        { '<leader>d', group = 'Diagnostics', icon = { icon = '󱖫 ' } },
         { '<leader>h', group = 'Harpoon' },
         {
           '<leader>b',
